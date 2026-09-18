@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}Confirm Booking{% endblock %}
+{% block content %}
+<div class="container lc-section">
+    <h1 class="mb-4">Confirm Your Booking</h1>
+
+    <div class="row g-4">
+        <div class="col-md-5">
+            <div class="lc-card">
+                <h5>Order Summary</h5>
+                {% for test in tests %}
+                    <p class="mb-1">{{ test.name }} — ₹{{ test.price }}</p>
+                {% endfor %}
+                {% for pkg in packages %}
+                    <p class="mb-1">{{ pkg.name }} (Package) — ₹{{ pkg.price }}</p>
+                {% endfor %}
+                <hr>
+                <h5>Total: ₹{{ total }}</h5>
+            </div>
+        </div>
+
+        <div class="col-md-7">
+            <div class="lc-card">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Preferred Date</label>
+                        <input type="date" name="preferred_date" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Preferred Time</label>
+                        <input type="time" name="preferred_time" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Collection Type</label>
+                        <select name="collection_type" class="form-select" id="collectionType" required>
+                            <option value="LAB_VISIT">Lab Visit</option>
+                            <option value="HOME_COLLECTION">Home Collection</option>
+                        </select>
+                    </div>
+
+                    <div class="lc-card mb-3" style="background: var(--color-primary-light); border: none;">
+                        <p class="mb-0 small"><strong>Payment:</strong> Please make the payment at the laboratory at the time of your visit or sample collection.</p>
+                    </div>
+
+                    <div class="mb-3" id="addressField" style="display: none;">
+                        <label class="form-label">Address (for home collection)</label>
+                        <textarea name="address" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Notes (optional)</label>
+                        <textarea name="notes" class="form-control" rows="2"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-lc-primary w-100">Confirm Booking</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const collectionSelect = document.getElementById('collectionType');
+    const addressField = document.getElementById('addressField');
+
+    function toggleAddressField() {
+        addressField.style.display = collectionSelect.value === 'HOME_COLLECTION' ? 'block' : 'none';
+    }
+    collectionSelect.addEventListener('change', toggleAddressField);
+    toggleAddressField();
+</script>
+{% endblock %}

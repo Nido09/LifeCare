@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block title %}My Dashboard{% endblock %}
+{% block content %}
+<div class="container lc-section">
+
+    <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
+        <div>
+            <h1 class="h3 mb-1">Welcome, {{ user.get_full_name|default:user.username }}</h1>
+            <p class="text-muted mb-0">Patient ID: <strong>{{ profile.patient_id }}</strong></p>
+        </div>
+        <a href="{% url 'patient_profile' %}" class="btn btn-lc-outline btn-sm">Edit Profile</a>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="lc-card text-center h-100"><h2 class="mb-0" style="color: var(--color-primary);">{{ appointment_count }}</h2><p class="text-muted small mb-0">Total Appointments</p></div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="lc-card text-center h-100"><h2 class="mb-0" style="color: var(--color-warning);">{{ pending_appointments }}</h2><p class="text-muted small mb-0">Pending</p></div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="lc-card text-center h-100"><h2 class="mb-0" style="color: var(--color-success);">{{ completed_appointments }}</h2><p class="text-muted small mb-0">Completed</p></div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="lc-card text-center h-100"><h2 class="mb-0" style="color: var(--color-info);">{{ available_reports }}</h2><p class="text-muted small mb-0">Reports Ready</p></div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-6">
+            <div class="lc-card h-100">
+                <h5>Upcoming Appointment</h5>
+                {% if upcoming_appointment %}
+                    <p class="mb-1"><strong>{{ upcoming_appointment.appointment_id }}</strong></p>
+                    <p class="text-muted small mb-2">{{ upcoming_appointment.preferred_date }} at {{ upcoming_appointment.preferred_time }}</p>
+                    <a href="{% url 'appointment_detail' upcoming_appointment.appointment_id %}" class="btn btn-lc-outline btn-sm">View Details</a>
+                {% else %}
+                    <p class="text-muted">You have no upcoming appointments yet.</p>
+                    <a href="{% url 'test_list' %}" class="btn btn-lc-primary btn-sm">Book a Test</a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="lc-card h-100">
+                <h5>Pending Payments</h5>
+                {% if pending_payments %}
+                    <p>{{ pending_payments }} appointment(s) awaiting payment.</p>
+                    <a href="{% url 'my_appointments' %}" class="btn btn-lc-outline btn-sm">View & Pay</a>
+                {% else %}
+                    <p class="text-muted">No pending payments. You're all clear.</p>
+                {% endif %}
+                <p class="text-muted small mt-2 mb-0">Total spent to date: <strong>₹{{ total_spent }}</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+            <div class="lc-card"><h6 class="mb-3">Appointments Over Time</h6><canvas id="chartAppts" height="200"></canvas></div>
+        </div>
+        <div class="col-lg-6">
+            <div class="lc-card"><h6 class="mb-3">Appointment Status</h6><canvas id="chartStatus" height="200"></canvas></div>
+        </div>
+        <div class="col-lg-6">
+            <div class="lc-card"><h6 class="mb-3">Tests by Department</h6><canvas id="chartDept" height="200"></canvas></div>
+        </div>
+        <div class="col-lg-6">
+            <div class="lc-card"><h6 class="mb-3">Spending History</h6><canvas id="chartSpend" height="200"></canvas></div>
+        </div>
+    </div>
+
+        <h5 class="mb-3">Quick Actions</h5>
+    <div class="row g-3">
+        <div class="col-6 col-md-3"><a href="{% url 'test_list' %}" class="lc-card d-block text-center h-100 text-decoration-none">Book Appointment</a></div>
+        <div class="col-6 col-md-3"><a href="{% url 'my_appointments' %}" class="lc-card d-block text-center h-100 text-decoration-none">My Appointments</a></div>
+        <div class="col-6 col-md-3"><a href="{% url 'my_reports' %}" class="lc-card d-block text-center h-100 text-decoration-none">My Reports</a></div>
+        <div class="col-6 col-md-3"><a href="{% url 'my_transactions' %}" class="lc-card d-block text-center h-100 text-decoration-none">My Transactions</a></div>
+        <div class="col-6 col-md-3"><a href="{% url 'home' %}#home-collection" class="lc-card d-block text-center h-100 text-decoration-none">Home Sample Collection</a></div>
+    </div>
+
+</div>
+
+{% endblock %}
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script>
+
+const teal='#078895', navy='#122d48', coral='#0EA5B7', warn='#A98A2E', ok='#2E9E5B', danger='#D6473D', info='#2E7FD8';
+
+new Chart(document.getElementById('chartAppts'), {
+    type: 'line',
+    data: { labels: {{ chart_appts_labels|safe }}, datasets: [{ label: 'Appointments', data: {{ chart_appts_data|safe }}, borderColor: '#078895', backgroundColor: 'rgba(7,136,149,0.1)', tension: 0.3, fill: true }] },
+    options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+});
+new Chart(document.getElementById('chartStatus'), {
+    type: 'doughnut',
+    data: { labels: {{ chart_status_labels|safe }}, datasets: [{ data: {{ chart_status_data|safe }}, backgroundColor: ['#078895','#D8A400','#2E9E5B','#D6473D','#2E7FD8','#122d48','#F0645A'] }] }
+});
+new Chart(document.getElementById('chartDept'), {
+    type: 'bar',
+    data: { labels: {{ chart_dept_labels|safe }}, datasets: [{ label: 'Tests', data: {{ chart_dept_data|safe }}, backgroundColor: '#078895' }] },
+    options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+});
+new Chart(document.getElementById('chartSpend'), {
+    type: 'bar',
+    data: { labels: {{ chart_spend_labels|safe }}, datasets: [{ label: 'Spent (₹)', data: {{ chart_spend_data|safe }}, backgroundColor: '#F0645A' }] },
+    options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+});
+</script>
+{% endblock %}

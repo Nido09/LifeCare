@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block title %}Manage {{ appointment.appointment_id }}{% endblock %}
+
+{% block content %}
+<div class="container lc-section">
+    <a href="{% url 'staff_appointment_list' %}" class="text-muted">&larr; Back to all appointments</a>
+    {% include 'staff/_staff_nav.html' %}
+
+    <div class="lc-card mt-3" style="max-width: 700px;">
+        <h2 class="h4">{{ appointment.appointment_id }}</h2>
+
+        <p>
+            <strong>Patient:</strong>
+            {{ appointment.patient.patient_id }} —
+            {{ appointment.patient.user.get_full_name }}
+        </p>
+
+        <p>
+            <strong>Date:</strong>
+            {{ appointment.preferred_date }} at {{ appointment.preferred_time }}
+        </p>
+
+        <p>
+            <strong>Type:</strong>
+            {{ appointment.get_collection_type_display }}
+        </p>
+
+        {% if appointment.address %}
+        <p><strong>Address:</strong> {{ appointment.address }}</p>
+        {% endif %}
+
+        <p><strong>Total:</strong> ₹{{ appointment.total_amount }}</p>
+
+        <h6 class="mt-3">Tests / Packages</h6>
+        <ul>
+            {% for t in appointment.tests.all %}
+                <li>{{ t.name }}</li>
+            {% endfor %}
+
+            {% for p in appointment.packages.all %}
+                <li>{{ p.name }} (Package)</li>
+            {% endfor %}
+        </ul>
+
+        <!-- Update Appointment Status -->
+        <form method="post" class="mt-3">
+            {% csrf_token %}
+
+            <label class="form-label">Update Status</label>
+
+            <select name="status" class="form-select mb-2">
+                {% for value, label in status_choices %}
+                    <option value="{{ value }}"
+                        {% if value == appointment.status %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <button type="submit" class="btn btn-lc-primary">
+                Update Status
+            </button>
+        </form>
+
+        <!-- Payment Status / Mark as Paid -->
+        {% with latest_payment=appointment.payments.last %}
+            {% if not latest_payment or latest_payment.status != 'PAID' %}
+            <div class="mt-3">
+                <p class="text-muted small mb-1">
+                    Preferred payment:
+                    {{ appointment.get_payment_preference_display }}
+                </p>
+
+                <a href="{% url 'staff_mark_paid_at_lab' appointment.appointment_id %}"
+                   class="btn btn-lc-outline btn-sm"
+                   onclick="return confirm('Confirm payment of ₹{{ appointment.total_amount }} was collected at the lab?');">
+                    Mark as Paid (Collected at Lab)
+                </a>
+            </div>
+
+            {% else %}
+                <span class="lc-badge lc-badge-teal mt-2">
+                    Payment Completed
+                </span>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Enter Report Results -->
+        {% if appointment.status == 'PROCESSING' or appointment.status == 'SAMPLE_COLLECTED' %}
+            <a href="{% url 'staff_report_choice' appointment.appointment_id %}" class="btn btn-lc-outline mt-3">Enter Report Results</a>
+                Enter Report Results
+            </a>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}

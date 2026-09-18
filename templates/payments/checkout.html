@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}Payment{% endblock %}
+{% block content %}
+<div class="container lc-section">
+    <div class="lc-card" style="max-width: 500px; margin: 0 auto;">
+        <h3 class="mb-1">Complete Your Payment</h3>
+        <p class="text-muted mb-3">Appointment {{ appointment.appointment_id }}</p>
+        <h2 class="mb-4">₹{{ payment.amount }}</h2>
+        <button id="rzp-pay-button" class="btn btn-lc-primary w-100">Pay Now</button>
+        <p class="text-muted small mt-3 mb-0">You'll be redirected to Razorpay's secure payment window. We never see or store your card details.</p>
+    </div>
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    document.getElementById('rzp-pay-button').onclick = function (e) {
+        var options = {
+            "key": "{{ razorpay_key_id }}",
+            "amount": "{{ amount_in_paise }}",
+            "currency": "INR",
+            "name": "LIFE CARE DIAGNOSTIC CENTER",
+            "description": "Appointment {{ appointment.appointment_id }}",
+            "order_id": "{{ razorpay_order_id }}",
+            "prefill": {
+                "name": "{{ patient_name }}",
+                "email": "{{ patient_email }}",
+                "contact": "{{ patient_phone }}"
+            },
+            "theme": {
+                "color": "#0F7C7C"
+            },
+            "handler": function (response) {
+                // This fires ONLY after Razorpay's own widget confirms payment.
+                // We still don't trust it blindly — we send it to our server
+                // for independent signature verification before showing success.
+                fetch("{% url 'verify_payment' payment.payment_id %}", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: new URLSearchParams({
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_signature: response.razorpay_signature
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === "success") {
+                        window.location.href = data.redirect_url;
+                    } else {
+                        alert("Payment verification failed. Please contact support.");
+                    }
+                });
+            },
+            "modal": {
+                "ondismiss": function () {
+                    alert("Payment cancelled.");
+                }
+            }
+        };
+        var rzp = new Razorpay(options);
+        rzp.open();
+        e.preventDefault();
+    };
+</script>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Staff Dashboard{% endblock %}
+{% block content %}
+<div class="container lc-section">
+    <h1 class="h3 mb-4">Staff Dashboard</h1>
+    {% include 'staff/_staff_nav.html' %}
+
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-4"><div class="lc-card text-center h-100"><h2 class="mb-0" style="color: var(--color-primary);">{{ today_appointments }}</h2><p class="text-muted small mb-0">Today's Appointments</p></div></div>
+        <div class="col-6 col-md-4"><div class="lc-card text-center h-100"><h2 class="mb-0" style="color: var(--color-warning);">{{ pending_appointments }}</h2><p class="text-muted small mb-0">Pending Appointments</p></div></div>
+        <div class="col-6 col-md-4"><div class="lc-card text-center h-100"><h2 class="mb-0" style="color: var(--color-info);">{{ samples_to_collect }}</h2><p class="text-muted small mb-0">Samples to Collect</p></div></div>
+        <div class="col-6 col-md-4"><div class="lc-card text-center h-100"><h2 class="mb-0" style="color: var(--color-danger);">{{ processing_reports }}</h2><p class="text-muted small mb-0">Reports Pending</p></div></div>
+        <div class="col-6 col-md-4"><div class="lc-card text-center h-100"><h2 class="mb-0" style="color: var(--color-success);">{{ reports_ready }}</h2><p class="text-muted small mb-0">Reports Ready</p></div></div>
+        <div class="col-6 col-md-4"><div class="lc-card text-center h-100"><h2 class="mb-0">{{ home_collections }}</h2><p class="text-muted small mb-0">Active Home Collections</p></div></div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-lg-6"><div class="lc-card"><h6 class="mb-3">Daily Appointments (Last 14 Days)</h6><canvas id="chartDaily" height="200"></canvas></div></div>
+        <div class="col-lg-6"><div class="lc-card"><h6 class="mb-3">Appointment Status</h6><canvas id="chartStatus" height="200"></canvas></div></div>
+        <div class="col-lg-6"><div class="lc-card"><h6 class="mb-3">Home Collection Status</h6><canvas id="chartCollStatus" height="200"></canvas></div></div>
+        <div class="col-lg-6"><div class="lc-card"><h6 class="mb-3">Staff Workload (Active Collections)</h6><canvas id="chartWorkload" height="200"></canvas></div></div>
+    </div>
+
+    <h5 class="mb-3">Recent Appointments</h5>
+    {% for appt in recent_appointments %}
+    <div class="lc-card mb-2 d-flex justify-content-between align-items-center">
+        <div><strong>{{ appt.appointment_id }}</strong> — {{ appt.patient.patient_id }}<span class="lc-badge lc-badge-teal ms-2">{{ appt.get_status_display }}</span></div>
+        <a href="{% url 'staff_appointment_detail' appt.appointment_id %}" class="btn btn-lc-outline btn-sm">Manage</a>
+    </div>
+    {% empty %}<p class="text-muted">No appointments yet.</p>{% endfor %}
+</div>
+{% endblock %}
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script>
+const teal='#078895', navy='#122d48', coral='#F0645A', warn='#D8A400', ok='#2E9E5B', danger='#D6473D', info='#2E7FD8';
+new Chart(document.getElementById('chartDaily'), { type:'line', data:{ labels:{{ chart_daily_labels|safe }}, datasets:[{ label:'Appointments', data:{{ chart_daily_data|safe }}, borderColor:teal, backgroundColor:'rgba(7,136,149,0.1)', tension:0.3, fill:true }]}, options:{ plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true,ticks:{stepSize:1}}} }});
+new Chart(document.getElementById('chartStatus'), { type:'doughnut', data:{ labels:{{ chart_status_labels|safe }}, datasets:[{ data:{{ chart_status_data|safe }}, backgroundColor:[teal,warn,ok,danger,info,navy,coral] }]}});
+new Chart(document.getElementById('chartCollStatus'), { type:'doughnut', data:{ labels:{{ chart_collection_status_labels|safe }}, datasets:[{ data:{{ chart_collection_status_data|safe }}, backgroundColor:[teal,warn,info,ok,danger] }]}});
+new Chart(document.getElementById('chartWorkload'), { type:'bar', data:{ labels:{{ chart_workload_labels|safe }}, datasets:[{ label:'Active Collections', data:{{ chart_workload_data|safe }}, backgroundColor:navy }]}, options:{ indexAxis:'y', plugins:{legend:{display:false}}, scales:{x:{beginAtZero:true,ticks:{stepSize:1}}} }});
+</script>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}Booking Cart{% endblock %}
+{% block content %}
+<div class="container lc-section">
+    <h1 class="mb-4">Your Booking Cart</h1>
+
+    {% if not tests and not packages %}
+        <div class="lc-card text-center py-5" style="max-width: 500px; margin: 0 auto;">
+            <h4 class="mb-2">Your cart is empty</h4>
+            <p class="text-muted mb-4">Browse our test catalog and add the tests you need.</p>
+            <a href="{% url 'test_list' %}" class="btn btn-lc-primary">Browse Tests</a>
+        </div>
+    {% else %}
+        <div class="row g-4">
+            <div class="col-lg-8">
+                {% for test in tests %}
+                <div class="lc-card d-flex justify-content-between align-items-center mb-2">
+                    <div>
+                        <span class="lc-badge lc-badge-teal mb-1">{{ test.category.name }}</span>
+                        <h6 class="mb-0">{{ test.name }}</h6>
+                        <p class="text-muted small mb-0">Code: {{ test.test_code }} · ₹{{ test.price }}</p>
+                    </div>
+                    <a href="{% url 'remove_from_cart' 'test' test.id %}" class="btn btn-lc-outline btn-sm">Remove</a>
+                </div>
+                {% endfor %}
+
+                {% for pkg in packages %}
+                <div class="lc-card d-flex justify-content-between align-items-center mb-2">
+                    <div>
+                        <span class="lc-badge lc-badge-coral mb-1">Package</span>
+                        <h6 class="mb-0">{{ pkg.name }}</h6>
+                        <p class="text-muted small mb-0">₹{{ pkg.price }}</p>
+                    </div>
+                    <a href="{% url 'remove_from_cart' 'package' pkg.id %}" class="btn btn-lc-outline btn-sm">Remove</a>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="col-lg-4">
+                <div class="lc-card" style="position: sticky; top: 90px;">
+                    <h5 class="mb-3">Order Summary</h5>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Items</span>
+                        <span>{{ tests|length|add:packages|length }}</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-3">
+                        <strong>Total</strong>
+                        <strong>₹{{ total }}</strong>
+                    </div>
+                    <a href="{% url 'checkout' %}" class="btn btn-lc-primary w-100">Proceed to Booking</a>
+                    <a href="{% url 'test_list' %}" class="btn btn-lc-outline w-100 mt-2">Continue Browsing</a>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

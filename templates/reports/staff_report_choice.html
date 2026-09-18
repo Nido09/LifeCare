@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Create Report — {{ appointment.appointment_id }}{% endblock %}
+{% block content %}
+<div class="container lc-section">
+    <div class="lc-card" style="max-width: 600px;">
+        <h2 class="h4 mb-1">Create Report</h2>
+        <p class="text-muted mb-4">{{ appointment.appointment_id }} — {{ appointment.patient.patient_id }}</p>
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <a href="{% url 'staff_report_create' appointment.appointment_id %}" class="lc-card d-block text-decoration-none h-100 text-center p-4">
+                    <h5 class="mb-2">Generate Report</h5>
+                    <p class="text-muted small mb-0">Enter results for each booked test and let the system produce a branded PDF.</p>
+                </a>
+            </div>
+            <div class="col-md-6">
+                <a href="{% url 'staff_report_upload' appointment.appointment_id %}" class="lc-card d-block text-decoration-none h-100 text-center p-4">
+                    <h5 class="mb-2">Upload Existing Report</h5>
+                    <p class="text-muted small mb-0">Attach a PDF report that was already generated externally.</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

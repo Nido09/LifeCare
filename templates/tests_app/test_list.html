@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Laboratory Tests{% endblock %}
+{% block content %}
+<div class="container lc-section">
+    <h1 class="mb-2">Laboratory Tests</h1>
+    <p class="text-muted mb-4">{{ total_test_count }} test(s) across {{ departments|length }} department(s)</p>
+
+    <form method="get" class="row g-2 mb-4">
+        <div class="col-12 col-md-6">
+            <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search by test name or code...">
+        </div>
+        <div class="col-8 col-md-4">
+            <select name="category" class="form-select">
+                <option value="">All Departments</option>
+                {% for cat in categories %}
+                <option value="{{ cat.slug }}" {% if cat.slug == selected_category %}selected{% endif %}>{{ cat.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-4 col-md-2">
+            <button type="submit" class="btn btn-lc-primary w-100">Search</button>
+        </div>
+    </form>
+
+    {% if departments %}
+    <div class="accordion lc-dept-accordion" id="deptAccordion">
+        {% for dept in departments %}
+        <div class="accordion-item lc-dept-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#dept{{ forloop.counter }}">
+                    <span class="lc-dept-name">{{ dept.category.name }}</span>
+                    <span class="lc-dept-count">{{ dept.tests|length }} test{{ dept.tests|length|pluralize }}</span>
+                </button>
+            </h2>
+            <div id="dept{{ forloop.counter }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}"
+                 data-bs-parent="#deptAccordion">
+                <div class="accordion-body p-0">
+                    <div class="lc-test-list">
+                        {% for test in dept.tests %}
+                        <div class="lc-test-row">
+                            <div class="lc-test-row-info">
+                                <span class="lc-test-row-name">{{ test.name }}</span>
+                                <span class="lc-test-row-code">{{ test.test_code }}</span>
+                            </div>
+                            <div class="lc-test-row-price">₹{{ test.price }}</div>
+                            <div class="lc-test-row-actions">
+                                <button type="button" class="btn btn-lc-outline btn-sm lc-view-details-btn"
+                                        data-bs-toggle="modal" data-bs-target="#testDetailModal"
+                                        data-name="{{ test.name }}"
+                                        data-code="{{ test.test_code }}"
+                                        data-price="{{ test.price }}"
+                                        data-department="{{ test.category.name }}"
+                                        data-description="{{ test.description|default:'' }}"
+                                        data-sample="{{ test.sample_type|default:'' }}"
+                                        data-prep="{{ test.preparation_instructions|default:'' }}"
+                                        data-fasting="{% if test.is_fasting_required %}1{% else %}0{% endif %}"
+                                        data-fasting-instructions="{{ test.fasting_instructions|default:'' }}"
+                                        data-turnaround="{{ test.turnaround_time_hours }}"
+                                        data-detail-url="{% url 'test_detail' test.test_code %}">
+                                    View Details
+                                </button>
+                                {% if test.id in cart_test_ids %}
+                                    <span class="btn btn-sm lc-added-badge">✓ Added</span>
+                                {% else %}
+                                    <a href="{% url 'add_to_cart' 'test' test.id %}" class="btn btn-lc-primary btn-sm">Add to Cart</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+        <p class="text-muted">No tests match your search.</p>
+    {% endif %}
+</div>
+
+<!-- Shared modal — populated by JS from the clicked button's data-* attributes -->
+<div class="modal fade" id="testDetailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content lc-test-modal">
+            <div class="modal-header">
+                <div>
+                    <span class="lc-badge lc-badge-teal mb-1" id="modalDept"></span>
+                    <h5 class="modal-title mb-0" id="modalName"></h5>
+                    <span class="text-muted small" id="modalCode"></span>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="lc-modal-price" id="modalPrice"></div>
+
+                <div id="modalFastingBanner" class="lc-fasting-banner" style="display:none;">
+                    <strong>⚠ Fasting Required</strong>
+                    <p class="mb-0" id="modalFastingText"></p>
+                </div>
+
+                <div class="lc-modal-section">
+                    <h6>What This Test Checks</h6>
+                    <p id="modalDescription" class="text-muted"></p>
+                </div>
+
+                <div class="lc-modal-section">
+                    <h6>Sample Type</h6>
+                    <p id="modalSample" class="text-muted"></p>
+                </div>
+
+                <div class="lc-modal-section">
+                    <h6>Preparation Instructions</h6>
+                    <p id="modalPrep" class="text-muted"></p>
+                </div>
+
+                <div class="lc-modal-section">
+                    <h6>Report Turnaround</h6>
+                    <p class="text-muted" id="modalTurnaround"></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#" id="modalFullPageLink" class="btn btn-lc-outline btn-sm">Full Details Page</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script src="{% static 'js/script.js' %}"></script>
+{% endblock %}

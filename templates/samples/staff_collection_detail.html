@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Manage {{ collection_request.request_id }}{% endblock %}
+{% block content %}
+<div class="container lc-section">
+    <a href="{% url 'staff_collection_list' %}" class="text-muted">&larr; Back to all collections</a>
+    {% include 'staff/_staff_nav.html' %}
+
+    <div class="lc-card mt-3" style="max-width: 700px;">
+        <h2 class="h4">{{ collection_request.request_id }}</h2>
+        <p><strong>Appointment:</strong> {{ collection_request.appointment.appointment_id }}</p>
+        <p><strong>Contact:</strong> {{ collection_request.contact_number }}</p>
+        <p><strong>Address:</strong> {{ collection_request.address }}</p>
+        <p><strong>Scheduled:</strong> {{ collection_request.scheduled_date }} at {{ collection_request.scheduled_time }}</p>
+
+        <form method="post" class="mt-3">
+            {% csrf_token %}
+            <label class="form-label">Status</label>
+            <select name="status" class="form-select mb-3">
+                {% for value, label in status_choices %}
+                <option value="{{ value }}" {% if value == collection_request.status %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+
+            <label class="form-label">Assign Collection Staff</label>
+            <select name="assigned_staff" class="form-select mb-3">
+                <option value="">Unassigned</option>
+                {% for staff_user in staff_users %}
+                <option value="{{ staff_user.id }}" {% if collection_request.assigned_staff_id == staff_user.id %}selected{% endif %}>
+                    {{ staff_user.get_full_name|default:staff_user.username }}
+                </option>
+                {% endfor %}
+            </select>
+
+            <label class="form-label">Staff Notes</label>
+            <textarea name="staff_notes" class="form-control mb-3" rows="3">{{ collection_request.staff_notes }}</textarea>
+
+            <button type="submit" class="btn btn-lc-primary">Save Changes</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

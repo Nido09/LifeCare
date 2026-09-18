@@ -1,0 +1,419 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About Us{% endblock %}
+
+{% block content %}
+
+<!-- ABOUT HERO -->
+<section class="lc-about-hero">
+
+    <div class="container">
+
+        <div class="row align-items-center g-5">
+
+            <div class="col-lg-7">
+
+                <div class="lc-about-hero-content">
+
+                    <span class="lc-about-eyebrow">
+                        ABOUT LIFE CARE
+                    </span>
+
+                    <h1>
+                        Healthcare you can trust.
+                        <span>Diagnostics made simple.</span>
+                    </h1>
+
+                    <p>
+                        LIFE CARE DIAGNOSTIC CENTER provides reliable diagnostic
+                        testing with a focus on accuracy, convenience, and patient care.
+                        From booking a test to accessing reports, we make the
+                        diagnostic journey simple and accessible.
+                    </p>
+
+                    <div class="lc-about-hero-actions">
+
+                        <a href="{% url 'test_list' %}" class="lc-about-hero-btn">
+                            Explore Tests
+                        </a>
+
+                        <a href="{% url 'package_list' %}" class="lc-about-hero-link">
+                            View Health Packages →
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- TRUST PANEL -->
+            <div class="col-lg-5">
+
+                <div class="lc-about-trust-panel">
+
+                    <span class="lc-about-mini-title">
+                        OUR COMMITMENT
+                    </span>
+
+                    <h3>
+                        Healthcare information,
+                        organised in one place.
+                    </h3>
+
+                    <div class="lc-about-trust-list">
+
+                        <div class="lc-about-trust-item">
+
+                            <strong>Reliable Testing</strong>
+
+                            <span>
+                                Clear access to a wide range of diagnostic tests.
+                            </span>
+
+                        </div>
+
+
+                        <div class="lc-about-trust-item">
+
+                            <strong>Easy Access</strong>
+
+                            <span>
+                                Book tests and manage appointments conveniently.
+                            </span>
+
+                        </div>
+
+
+                        <div class="lc-about-trust-item">
+
+                            <strong>Digital Reports</strong>
+
+                            <span>
+                                Access diagnostic reports securely online.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ABOUT INTRO -->
+<section class="lc-about-section">
+
+    <div class="container">
+
+        <div class="row align-items-start g-5">
+
+            <div class="col-lg-5">
+
+                <span class="lc-about-mini-title">
+                    WHO WE ARE
+                </span>
+
+                <h2>
+                    Better diagnostics for better healthcare decisions.
+                </h2>
+
+            </div>
+
+
+            <div class="col-lg-7">
+
+                <p class="lc-about-text">
+                    At LIFE CARE DIAGNOSTIC CENTER, we believe that timely
+                    and reliable diagnostic testing plays an important role
+                    in maintaining good health.
+                </p>
+
+                <p class="lc-about-text">
+                    Our platform makes it easier for patients to explore
+                    available tests, book health packages, manage appointments,
+                    and access diagnostic reports digitally.
+                </p>
+
+
+                <!-- TRUST STATS -->
+                <div class="lc-about-stats">
+
+                    <div class="lc-about-stat">
+
+                        <strong>
+                            Easy
+                        </strong>
+
+                        <span>
+                            Online Booking
+                        </span>
+
+                    </div>
+
+
+                    <div class="lc-about-stat">
+
+                        <strong>
+                            Digital
+                        </strong>
+
+                        <span>
+                            Report Access
+                        </span>
+
+                    </div>
+
+
+                    <div class="lc-about-stat">
+
+                        <strong>
+                            Simple
+                        </strong>
+
+                        <span>
+                            Patient Management
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- OUR SERVICES -->
+<section class="lc-about-services">
+
+    <div class="container">
+
+        <div class="lc-about-section-heading">
+
+            <span class="lc-about-mini-title">
+                WHAT WE OFFER
+            </span>
+
+            <h2>
+                Designed around your healthcare needs.
+            </h2>
+
+            <p>
+                Simple digital tools combined with convenient access to
+                diagnostic services.
+            </p>
+
+        </div>
+
+
+        <div class="row g-4">
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="lc-about-service-card">
+
+                    <span class="lc-about-service-number">01</span>
+
+                    <h4>Diagnostic Tests</h4>
+
+                    <p>
+                        Browse available laboratory tests and view important
+                        information before booking.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="lc-about-service-card">
+
+                    <span class="lc-about-service-number">02</span>
+
+                    <h4>Health Packages</h4>
+
+                    <p>
+                        Choose health packages that combine multiple diagnostic
+                        tests in one convenient booking.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="lc-about-service-card">
+
+                    <span class="lc-about-service-number">03</span>
+
+                    <h4>Easy Booking</h4>
+
+                    <p>
+                        Select tests or packages and manage appointments through
+                        a simple online system.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="lc-about-service-card">
+
+                    <span class="lc-about-service-number">04</span>
+
+                    <h4>Digital Reports</h4>
+
+                    <p>
+                        Access available diagnostic reports digitally from
+                        your account.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="lc-about-service-card">
+
+                    <span class="lc-about-service-number">05</span>
+
+                    <h4>Home Collection</h4>
+
+                    <p>
+                        Request home sample collection for a more convenient
+                        diagnostic experience.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="lc-about-service-card">
+
+                    <span class="lc-about-service-number">06</span>
+
+                    <h4>Patient Management</h4>
+
+                    <p>
+                        Keep track of appointments, bookings and healthcare
+                        information from one place.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- OUR APPROACH -->
+<section class="lc-about-section">
+
+    <div class="container">
+
+        <div class="lc-about-approach">
+
+            <div>
+
+                <span class="lc-about-mini-title">
+                    OUR APPROACH
+                </span>
+
+                <h2>
+                    Simple. Reliable. Patient-focused.
+                </h2>
+
+            </div>
+
+
+            <div class="lc-about-approach-text">
+
+                <p>
+                    We focus on making diagnostic services easier to access
+                    through a clear, organised and easy-to-use platform.
+                </p>
+
+                <p>
+                    From exploring tests to managing appointments and viewing
+                    reports, our goal is to make every step easier for patients.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- CTA -->
+<section class="lc-about-cta">
+
+    <div class="container">
+
+        <div class="lc-about-cta-content">
+
+            <span>
+                READY TO GET STARTED?
+            </span>
+
+            <h2>
+                Take the next step towards better health.
+            </h2>
+
+            <p>
+                Explore diagnostic tests and health packages available through
+                LIFE CARE DIAGNOSTIC CENTER.
+            </p>
+
+
+            <div class="lc-about-cta-buttons">
+
+                <a href="{% url 'test_list' %}" class="lc-about-primary-btn">
+                    Explore Tests
+                </a>
+
+                <a href="{% url 'package_list' %}" class="lc-about-secondary-btn">
+                    View Packages
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

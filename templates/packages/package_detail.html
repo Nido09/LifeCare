@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+{% block title %}{{ package.name }}{% endblock %}
+
+{% block content %}
+
+<section class="lc-package-detail-page">
+
+    <div class="container">
+
+        <a href="{% url 'package_list' %}" class="lc-pkg-back">
+            Back to all packages
+        </a>
+
+
+        <!-- Main Package Header -->
+        <div class="lc-pkg-detail-header">
+
+            <div class="lc-pkg-detail-header-left">
+
+                <span class="lc-pkg-detail-label">
+                    HEALTH PACKAGE
+                </span>
+
+                <h1>{{ package.name }}</h1>
+
+                {% if package.description %}
+
+                    <p class="lc-pkg-detail-description">
+                        {{ package.description }}
+                    </p>
+
+                {% else %}
+
+                    <p class="lc-pkg-detail-description">
+                        Comprehensive health screening designed to help you monitor
+                        your health and take preventive care.
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- Package Information -->
+            <div class="lc-pkg-detail-info">
+
+                <div class="lc-pkg-info-item">
+
+                    <span class="lc-pkg-info-label">
+                        PACKAGE CODE
+                    </span>
+
+                    <strong>{{ package.package_code }}</strong>
+
+                </div>
+
+
+                <div class="lc-pkg-info-item">
+
+                    <span class="lc-pkg-info-label">
+                        TESTS INCLUDED
+                    </span>
+
+                    <strong>
+                        {{ package.tests_included.count }}
+                        Test{{ package.tests_included.count|pluralize }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- Main Content -->
+        <div class="row g-4 mt-2">
+
+
+            <!-- Tests Included -->
+            <div class="col-lg-8">
+
+                <div class="lc-pkg-tests-card">
+
+                    <div class="lc-pkg-tests-header">
+
+                        <div>
+
+                            <span class="lc-pkg-detail-label">
+                                PACKAGE CONTENTS
+                            </span>
+
+                            <h2>Tests Included</h2>
+
+                        </div>
+
+
+                        <span class="lc-pkg-test-total">
+                            {{ package.tests_included.count }} Tests
+                        </span>
+
+                    </div>
+
+
+                    {% if package.tests_included.exists %}
+
+                        <div class="lc-pkg-tests-list">
+
+                            {% for t in package.tests_included.all %}
+
+                            <div class="lc-pkg-test-item">
+
+                                <div class="lc-pkg-test-number">
+                                    {{ forloop.counter }}
+                                </div>
+
+
+                                <div class="lc-pkg-test-content">
+
+                                    <h5>{{ t.name }}</h5>
+
+                                    {% if t.test_code %}
+
+                                    <span>
+                                        Test Code: {{ t.test_code }}
+                                    </span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                    {% else %}
+
+                        <div class="lc-pkg-no-tests">
+
+                            <h5>No tests added yet</h5>
+
+                            <p>
+                                Test details for this package will be updated soon.
+                            </p>
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Booking / Price -->
+            <div class="col-lg-4">
+
+                <div class="lc-pkg-booking-card">
+
+                    <span class="lc-pkg-detail-label">
+                        PACKAGE PRICE
+                    </span>
+
+
+                    <div class="lc-pkg-main-price">
+                        ₹{{ package.price }}
+                    </div>
+
+
+                    <p class="lc-pkg-booking-text">
+                        Book this package to include all the listed diagnostic
+                        tests in one health checkup.
+                    </p>
+
+
+                    {% if user.is_authenticated %}
+
+                        <a
+                            href="{% url 'add_to_cart' 'package' package.id %}"
+                            class="lc-pkg-book-btn"
+                        >
+                            Add Package to Cart
+                        </a>
+
+                    {% else %}
+
+                        <a
+                            href="{% url 'login' %}"
+                            class="lc-pkg-book-btn"
+                        >
+                            Login to Book
+                        </a>
+
+                    {% endif %}
+
+
+                    <div class="lc-pkg-booking-note">
+
+                        <p>
+                            Payment can be completed at the diagnostic center.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

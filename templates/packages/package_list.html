@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Health Packages{% endblock %}
+
+{% block content %}
+
+<!-- HERO SECTION -->
+<section class="lc-package-hero">
+
+    <div class="lc-hero-decoration lc-hero-circle"></div>
+
+    <div class="container">
+
+        <div class="lc-package-hero-content">
+
+            <span class="lc-package-eyebrow">
+                HEALTH • WELLNESS • PREVENTION
+            </span>
+
+            <h1>Health Packages</h1>
+
+            <p>
+                Smart, comprehensive health checkups designed to
+                help you stay ahead of your health.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- PACKAGES SECTION -->
+<section class="lc-packages-section">
+
+    <div class="container">
+
+        <!-- SECTION HEADER -->
+        <div class="lc-packages-heading">
+
+            <div>
+
+                <span class="lc-package-mini-title">
+                    CHOOSE YOUR CARE
+                </span>
+
+                <h2>
+                    Find the right package for you
+                </h2>
+
+            </div>
+
+
+            <div class="lc-package-total">
+
+                <span>
+                    {{ packages|length }} Packages Available
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- PACKAGE GRID -->
+        <div class="row g-4">
+
+            {% for pkg in packages %}
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="lc-package-card">
+
+
+                    <!-- CARD TOP -->
+                    <div class="lc-package-card-top">
+
+                        <span class="lc-package-test-count">
+
+                            {{ pkg.tests_included.count }}
+                            Test{{ pkg.tests_included.count|pluralize }}
+
+                        </span>
+
+                    </div>
+
+
+                    <!-- PACKAGE NAME -->
+                    <h3>
+                        {{ pkg.name }}
+                    </h3>
+
+
+                    <!-- DESCRIPTION -->
+                    {% if pkg.description %}
+
+                        <p class="lc-package-description">
+                            {{ pkg.description }}
+                        </p>
+
+                    {% else %}
+
+                        <p class="lc-package-description">
+                            Comprehensive health screening designed
+                            for better preventive care.
+                        </p>
+
+                    {% endif %}
+
+
+                    <!-- FOOTER -->
+                    <div class="lc-package-card-footer">
+
+                        <div class="lc-package-price">
+
+                            <span class="lc-price-label">
+                                PACKAGE PRICE
+                            </span>
+
+                            <span class="lc-price-value">
+                                ₹{{ pkg.price }}
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="{% url 'package_detail' pkg.package_code %}"
+                            class="lc-package-button"
+                        >
+
+                            View Details
+
+                            <span class="lc-button-arrow">
+                                →
+                            </span>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {% empty %}
+
+            <div class="col-12">
+
+                <div class="lc-no-packages">
+
+                    <h3>No packages available</h3>
+
+                    <p>
+                        Health packages will appear here soon.
+                    </p>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

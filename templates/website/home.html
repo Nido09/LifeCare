@@ -1,0 +1,243 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+<!-- ===== HERO ===== -->
+<section class="lc-hero">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                {% if user.is_authenticated %}
+                <div class="lc-hero-greeting">Welcome back, {{ user.get_full_name|default:user.username }} 👋</div>
+                {% else %}
+                <span class="lc-badge lc-badge-teal mb-3">Trusted Diagnostics Since Day One</span>
+                {% endif %}
+                <h1 class="lc-hero-title">Accurate Results.<br>Digital Reports.<br>Home Collection.</h1>
+                <p class="lc-hero-sub">
+                    Book lab tests online, get sample collection at your doorstep, and access
+                    your reports digitally — all from LIFE CARE DIAGNOSTIC CENTER.
+                </p>
+                <div class="d-flex gap-3 flex-wrap">
+                    <a href="{% url 'test_list' %}#deptAccordion" class="btn btn-lc-primary btn-lg">Book a Test</a>
+                    <a href="{% url 'test_list' %}" class="btn btn-lc-outline btn-lg">View Tests</a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="lc-hero-visual">
+                    <div class="lc-hero-visual-card lc-hero-card-1">
+                        <div class="lc-hero-icon">🧪</div>
+                        <div><strong>Digital Reports</strong><p class="mb-0 text-muted small">Ready within 24 hours</p></div>
+                    </div>
+                    <div class="lc-hero-visual-card lc-hero-card-2">
+                        <div class="lc-hero-icon">🏠</div>
+                        <div><strong>Home Collection</strong><p class="mb-0 text-muted small">Sample pickup at your doorstep</p></div>
+                    </div>
+                    <div class="lc-hero-visual-card lc-hero-card-3">
+                        <div class="lc-hero-icon">🔬</div>
+                        <div><strong>{{ total_tests }}+ Tests</strong><p class="mb-0 text-muted small">Across {{ total_categories }}+ departments</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== TRUST STATS ===== -->
+<section class="lc-stats-strip">
+    <div class="container">
+        <div class="row g-4 text-center">
+            <div class="col-6 col-md-3"><div class="lc-stat-number">{{ total_tests }}+</div><div class="lc-stat-label">Lab Tests Available</div></div>
+            <div class="col-6 col-md-3"><div class="lc-stat-number">{{ total_categories }}+</div><div class="lc-stat-label">Departments Covered</div></div>
+            <div class="col-6 col-md-3"><div class="lc-stat-number">{{ total_packages }}+</div><div class="lc-stat-label">Health Packages</div></div>
+            <div class="col-6 col-md-3"><div class="lc-stat-number">24 Hrs</div><div class="lc-stat-label">Digital Report Turnaround</div></div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== WHY CHOOSE US ===== -->
+<section class="lc-section">
+    <div class="container">
+        <div class="lc-section-heading">
+            <span class="lc-eyebrow">Why LifeCare</span>
+            <h2>Diagnostics You Can Trust</h2>
+            <p class="text-muted">Precision testing with the convenience modern healthcare demands.</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3"><div class="lc-feature-card"><div class="lc-feature-icon">✓</div><h5>Accurate Reports</h5><p class="text-muted small mb-0">Reliable testing backed by careful quality checks at every step.</p></div></div>
+            <div class="col-md-6 col-lg-3"><div class="lc-feature-card"><div class="lc-feature-icon">🏠</div><h5>Home Collection</h5><p class="text-muted small mb-0">Skip the queue — our team collects your sample at home.</p></div></div>
+            <div class="col-md-6 col-lg-3"><div class="lc-feature-card"><div class="lc-feature-icon">📱</div><h5>Digital Reports</h5><p class="text-muted small mb-0">Access your reports securely online, anytime, anywhere.</p></div></div>
+            <div class="col-md-6 col-lg-3"><div class="lc-feature-card"><div class="lc-feature-icon">☎</div><h5>24/7 Support</h5><p class="text-muted small mb-0">Emergency service and support whenever you need it.</p></div></div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== HOW IT WORKS ===== -->
+<section class="lc-section lc-section-alt">
+    <div class="container">
+        <div class="lc-section-heading">
+            <span class="lc-eyebrow">Simple Process</span>
+            <h2>How It Works</h2>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="lc-step-card">
+                    <div class="lc-step-number">1</div>
+                    <h6>Browse Tests</h6>
+                    <p class="text-muted small mb-0">Search our full catalog by department or name.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="lc-step-card">
+                    <div class="lc-step-number">2</div>
+                    <h6>Add to Cart</h6>
+                    <p class="text-muted small mb-0">Select multiple tests and add them together.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="lc-step-card">
+                    <div class="lc-step-number">3</div>
+                    <h6>Book Appointment</h6>
+                    <p class="text-muted small mb-0">Choose lab visit or home collection, pick a time.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="lc-step-card">
+                    <div class="lc-step-number">4</div>
+                    <h6>Get Your Report</h6>
+                    <p class="text-muted small mb-0">Access your digital report securely online.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== POPULAR TESTS ===== -->
+<section class="lc-section">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-end flex-wrap mb-4">
+            <div class="lc-section-heading text-start mb-0"><span class="lc-eyebrow">Popular Tests</span><h2 class="mb-0">Frequently Booked Tests</h2></div>
+            <a href="{% url 'test_list' %}" class="btn btn-lc-outline">View All Tests</a>
+        </div>
+        <div class="row g-4">
+            {% for test in popular_tests %}
+            <div class="col-md-4">
+                <div class="lc-card h-100">
+                    <span class="lc-badge lc-badge-teal mb-2">{{ test.category.name }}</span>
+                    <h5>{{ test.name }}</h5>
+                    <p class="text-muted small">Test Code: {{ test.test_code }}</p>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <span class="lc-price">₹{{ test.price }}</span>
+                        <a href="{% url 'test_detail' test.test_code %}" class="btn btn-lc-outline btn-sm">View Details</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}<p class="text-muted">No tests available yet — check back soon.</p>{% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- ===== DEPARTMENTS ===== -->
+<section class="lc-section lc-section-alt">
+    <div class="container">
+        <div class="lc-section-heading"><span class="lc-eyebrow">Departments</span><h2>Test Categories</h2></div>
+        <div class="row g-3">
+            {% for cat in categories %}
+            <div class="col-6 col-md-3"><a href="{% url 'test_list' %}?category={{ cat.slug }}" class="lc-dept-tile">{{ cat.name }}</a></div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- ===== HEALTH PACKAGES ===== -->
+<section class="lc-section">
+    <div class="container">
+        <div class="lc-section-heading"><span class="lc-eyebrow">Packages</span><h2>Health Packages</h2><p class="text-muted">Comprehensive checkups bundled for convenience and value.</p></div>
+        <div class="row g-4">
+            {% for pkg in packages %}
+            <div class="col-md-4">
+                <div class="lc-card h-100">
+                    <h5>{{ pkg.name }}</h5>
+                    <p class="text-muted small">{{ pkg.tests_included.count }} tests included</p>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <span class="lc-price">₹{{ pkg.price }}</span>
+                        <a href="{% url 'package_detail' pkg.package_code %}" class="btn btn-lc-outline btn-sm">View Package</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}<p class="text-muted">Packages coming soon.</p>{% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- ===== HOME COLLECTION CTA + FORM (pre-filled for logged-in patients) ===== -->
+<section class="lc-section" id="home-collection">
+    <div class="container">
+        <div class="lc-collection-banner">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-5 text-white">
+                    <span class="lc-eyebrow" style="color: #B8E4E8;">Home Sample Collection</span>
+                    <h2 class="text-white">Skip the Trip. We Come to You.</h2>
+                    <p class="mb-0" style="color: #C9D6D6;">Fill out the form and our team will call to confirm a convenient time slot.</p>
+                </div>
+                <div class="col-lg-7">
+                    <div class="lc-form-card m-0" style="max-width: 100%;">
+                        <form method="post" action="{% url 'home_collection_inquiry' %}">
+                            {% csrf_token %}
+                            <div class="row g-3">
+                                <div class="col-md-6"><input type="text" name="name" class="form-control" placeholder="Full Name" value="{{ prefill_name|default:'' }}" required></div>
+                                <div class="col-md-6"><input type="text" name="phone_number" class="form-control" placeholder="Phone Number" value="{{ prefill_phone|default:'' }}" required></div>
+                                <div class="col-md-6"><input type="date" name="preferred_date" class="form-control"></div>
+                                <div class="col-md-6"><input type="text" name="notes" class="form-control" placeholder="Notes (optional)"></div>
+                                <div class="col-12"><textarea name="address" class="form-control" placeholder="Full Address" rows="2" required>{{ prefill_address|default:'' }}</textarea></div>
+                                {% if prefill_name %}<div class="col-12"><small class="text-white" style="opacity:0.8;">Pre-filled from your profile — edit any field as needed.</small></div>{% endif %}
+                                <div class="col-12"><button type="submit" class="btn btn-lc-primary w-100">Request Collection</button></div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== FAQ TEASER ===== -->
+<section class="lc-section lc-section-alt">
+    <div class="container">
+        <div class="lc-section-heading"><span class="lc-eyebrow">Questions?</span><h2>Frequently Asked Questions</h2></div>
+        <div class="row g-3 justify-content-center">
+            <div class="col-lg-8">
+                <div class="lc-card mb-2"><h6 class="mb-1">How do I book a test?</h6><p class="text-muted small mb-0">Register or log in, browse our test catalog, and book an appointment for lab visit or home collection.</p></div>
+                <div class="lc-card mb-2"><h6 class="mb-1">How long do reports take?</h6><p class="text-muted small mb-0">Most reports are available digitally within 24 hours, depending on the test type.</p></div>
+                <div class="lc-card mb-3"><h6 class="mb-1">Is home sample collection available?</h6><p class="text-muted small mb-0">Yes — fill out the form above and our team will confirm a convenient time slot.</p></div>
+                <div class="text-center"><a href="{% url 'faq' %}" class="btn btn-lc-outline">View All FAQs</a></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== PATIENT EXPERIENCE (honest — no fabricated reviews) ===== -->
+<section class="lc-section">
+    <div class="container">
+        <div class="lc-section-heading"><span class="lc-eyebrow">Our Commitment</span><h2>Built Around Your Convenience</h2></div>
+        <div class="row g-4 text-center">
+            <div class="col-md-4"><div class="lc-feature-card"><h5>Accurate & Timely</h5><p class="text-muted small mb-0">Every result is processed carefully and delivered on schedule.</p></div></div>
+            <div class="col-md-4"><div class="lc-feature-card"><h5>Easy to Reach</h5><p class="text-muted small mb-0">Questions or feedback? Our team is a message away.</p></div></div>
+            <div class="col-md-4"><div class="lc-feature-card"><h5>Always Improving</h5><p class="text-muted small mb-0">We continuously refine our service based on patient needs.</p></div></div>
+        </div>
+        <div class="text-center mt-4">
+            <a href="{% url 'feedback' %}" class="btn btn-lc-outline">Share Your Feedback</a>
+        </div>
+    </div>
+</section>
+
+<!-- ===== FINAL CTA ===== -->
+<section class="lc-final-cta">
+    <div class="container text-center">
+        <h2 class="text-white mb-2">Need a Diagnostic Test?</h2>
+        <p class="mb-4" style="color: #C9D6D6;">Book online in minutes — accurate results, delivered digitally.</p>
+        <a href="{% url 'test_list' %}" class="btn btn-lc-primary btn-lg">Book Your Appointment</a>
+    </div>
+</section>
+
+{% endblock %}

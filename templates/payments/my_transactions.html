@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}My Transactions{% endblock %}
+{% block content %}
+<div class="container lc-section">
+    <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
+        <h1 class="h3 mb-0">My Transactions</h1>
+        <div class="lc-card px-3 py-2 mb-0">
+            <span class="text-muted small">Total Paid</span>
+            <div class="fw-bold" style="color: var(--color-navy);">₹{{ total_paid }}</div>
+        </div>
+    </div>
+
+    {% if transactions %}
+        {% for t in transactions %}
+        <div class="lc-card mb-2 d-flex justify-content-between align-items-center flex-wrap">
+            <div>
+                <strong>{{ t.payment_id }}</strong>
+                <span class="text-muted small ms-2">{{ t.appointment.appointment_id }}</span>
+                <div class="text-muted small">{{ t.created_at|date:"d M Y, h:i A" }} · {{ t.get_payment_method_display }}</div>
+            </div>
+            <div class="text-end">
+                <div class="fw-bold">₹{{ t.amount }}</div>
+                <span class="lc-badge {% if t.status == 'PAID' %}lc-badge-teal{% elif t.status == 'FAILED' %}lc-badge-coral{% else %}lc-badge-teal{% endif %}">
+                    {{ t.get_status_display }}
+                </span>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="lc-card text-center py-5">
+            <p class="text-muted mb-0">No transactions yet.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

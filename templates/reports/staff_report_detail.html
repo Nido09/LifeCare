@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}Report — {{ report.appointment.appointment_id }}{% endblock %}
+{% block content %}
+<div class="container lc-section">
+    {% include 'staff/_staff_nav.html' %}
+    <div class="lc-card" style="max-width: 900px;">
+        <div class="d-flex justify-content-between align-items-start flex-wrap mb-2">
+            <h2 class="h4 mb-0">{{ report.appointment.appointment_id }}</h2>
+            <span class="lc-badge {% if report.origin == 'UPLOADED' %}lc-badge-coral{% else %}lc-badge-teal{% endif %}">
+                {{ report.get_origin_display }}
+            </span>
+        </div>
+        <p><strong>Patient:</strong> {{ report.patient.patient_id }} — {{ report.patient.user.get_full_name }}</p>
+        <p><strong>Tests in this report:</strong> {{ report.results.count }}</p>
+
+        {% if report.origin == 'UPLOADED' %}
+            <p class="text-muted">This report was uploaded directly — no result fields to edit.</p>
+            {% if report.pdf_file %}<a href="{% url 'report_download' report.report_uid %}" class="btn btn-lc-outline">Download Uploaded PDF</a>{% endif %}
+        {% else %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label">Referred By (optional)</label>
+                <input type="text" name="referred_by" class="form-control" value="{{ report.referred_by }}">
+            </div>
+            <div class="form-check mb-3">
+                <input type="checkbox" name="is_demo_data" class="form-check-input" id="demoCheck" {% if report.is_demo_data %}checked{% endif %}>
+                <label class="form-check-label" for="demoCheck">This report contains demo/sample data</label>
+            </div>
+
+            {% for r in report.results.all %}
+            <div class="lc-card mb-2 p-3" style="background: var(--color-bg);">
+                <h6 class="mb-2">{{ forloop.counter }}. {{ r.test.name }} <span class="text-muted small">({{ r.test.test_code }})</span></h6>
+                <div class="row g-2">
+                    <div class="col-md-6">
+                        <label class="form-label small">Result Value</label>
+                        <textarea name="result_{{ r.id }}_value" class="form-control" rows="2">{{ r.result_value }}</textarea>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small">Reference Range</label>
+                        <input type="text" name="result_{{ r.id }}_range" class="form-control" value="{{ r.reference_range }}">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small">Units</label>
+                        <input type="text" name="result_{{ r.id }}_units" class="form-control" value="{{ r.units }}">
+                    </div>
+                    <div class="col-md-1">
+                        <label class="form-label small">Flag</label>
+                        <select name="result_{{ r.id }}_flag" class="form-select">
+                            <option value="NORMAL" {% if r.abnormal_flag == 'NORMAL' %}selected{% endif %}>—</option>
+                            <option value="LOW" {% if r.abnormal_flag == 'LOW' %}selected{% endif %}>▼</option>
+                            <option value="HIGH" {% if r.abnormal_flag == 'HIGH' %}selected{% endif %}>▲</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-muted">No tests found for this appointment.</p>
+            {% endfor %}
+
+            <button type="submit" class="btn btn-lc-primary mt-2">Save All Results</button>
+        </form>
+
+        <div class="mt-3">
+            {% if report.pdf_file %}<a href="{% url 'report_download' report.report_uid %}" class="btn btn-lc-outline">Download Existing PDF</a>{% endif %}
+            <a href="{% url 'generate_report_pdf' report.report_uid %}" class="btn btn-lc-primary">
+                {% if report.pdf_file %}Regenerate PDF{% else %}Generate PDF{% endif %}
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

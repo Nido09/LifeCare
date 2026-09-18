@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="container lc-section">
+    <div class="lc-card" style="max-width: 500px;">
+        <span class="lc-badge lc-badge-teal mb-2">{{ role }} Account</span>
+        <h2>Welcome, {{ user.get_full_name|default:user.username }}</h2>
+        <p class="text-muted">Role: {{ user.role }}</p>
+        <p>This is a temporary placeholder — your real {{ role }} dashboard will be built in a later stage.</p>
+        <a href="{% url 'logout' %}" class="btn btn-lc-outline">Logout</a>
+    </div>
+</div>
+{% endblock %}

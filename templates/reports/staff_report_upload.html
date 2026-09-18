@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Upload Report — {{ appointment.appointment_id }}{% endblock %}
+{% block content %}
+<div class="container lc-section">
+    <div class="lc-form-card">
+        <h2 class="mb-1">Upload Existing Report</h2>
+        <p class="text-muted mb-4">{{ appointment.appointment_id }} — {{ appointment.patient.patient_id }}</p>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label">Report PDF</label>
+                <input type="file" name="report_file" class="form-control" accept="application/pdf" required>
+                <small class="text-muted">PDF only, max 15 MB.</small>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Referred By (optional)</label>
+                <input type="text" name="referred_by" class="form-control" placeholder="e.g. Self, or doctor's name">
+            </div>
+            <div class="mb-3 form-check">
+                <input type="checkbox" name="is_demo_data" class="form-check-input" id="demoCheckUpload" checked>
+                <label class="form-check-label" for="demoCheckUpload">This is demo/sample data (not a real result)</label>
+            </div>
+            <button type="submit" class="btn btn-lc-primary w-100">Upload Report</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

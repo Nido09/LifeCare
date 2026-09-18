@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+<div class="container lc-section">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">Notifications</h1>
+
+        {% if notifications %}
+        <a href="{% url 'mark_all_read' %}" class="btn btn-lc-outline btn-sm">
+            Mark All as Read
+        </a>
+        {% endif %}
+    </div>
+
+    {% if notifications %}
+
+        {% for n in notifications %}
+
+        <a href="{% url 'mark_notification_read' n.id %}" class="text-decoration-none">
+
+            <div class="lc-card mb-2 {% if not n.is_read %}notification-unread{% endif %}">
+
+                <div class="d-flex justify-content-between align-items-start">
+
+                    <div>
+                        <h6 class="mb-1 {% if not n.is_read %}fw-bold{% endif %}"
+                            style="color: var(--color-text);">
+
+                            {{ n.title }}
+
+                            {% if not n.is_read %}
+                                <span class="lc-badge lc-badge-coral ms-2">
+                                    New
+                                </span>
+                            {% endif %}
+
+                        </h6>
+
+                        <p class="text-muted small mb-0">
+                            {{ n.message }}
+                        </p>
+                    </div>
+
+                    <span class="text-muted small text-nowrap ms-2">
+                        {{ n.created_at|timesince }} ago
+                    </span>
+
+                </div>
+
+            </div>
+
+        </a>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p class="text-muted">
+            You have no notifications yet.
+        </p>
+
+    {% endif %}
+
+</div>
+{% endblock %}

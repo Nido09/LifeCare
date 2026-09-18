@@ -1,0 +1,169 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}LIFE CARE DIAGNOSTIC CENTER{% endblock %}</title>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=20260828">
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- ===== DESKTOP / MAIN NAVBAR (unchanged structure) ===== -->
+    <nav class="navbar navbar-expand-lg lc-navbar sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+                <img src="{% static 'images/logo.png' %}" alt="Life Care logo">
+                LIFE CARE DIAGNOSTIC CENTER
+            </a>
+
+            <button class="lc-hamburger d-lg-none" type="button" id="lcDrawerOpen" aria-label="Open menu">
+                <span></span><span></span><span></span>
+            </button>
+
+            <div class="d-none d-lg-flex ms-auto align-items-center">
+                <ul class="navbar-nav flex-row align-items-center">
+                    <li class="nav-item me-2">
+                        <a class="nav-link position-relative" href="{% url 'booking_cart' %}">
+                            Cart
+                            {% if cart_item_count > 0 %}
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background: var(--color-accent); font-size: 0.6rem;">{{ cart_item_count }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'test_list' %}">Tests</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'package_list' %}">Packages</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'faq' %}">FAQ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'feedback' %}">Feedback</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact</a></li>
+
+                    {% if user.is_authenticated %}
+                        {% if user.role == 'PATIENT' %}
+                            <li class="nav-item"><a class="nav-link" href="{% url 'my_transactions' %}">Transactions</a></li>
+                        {% endif %}
+                        {% if user.role == 'ADMIN' %}
+                            <li class="nav-item"><a class="nav-link" href="{% url 'admin_dashboard' %}">Admin Panel</a></li>
+                        {% elif user.role == 'STAFF' %}
+                            <li class="nav-item"><a class="nav-link" href="{% url 'staff_dashboard' %}">Staff Panel</a></li>
+                        {% endif %}
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link position-relative" href="#" id="notifBell" data-bs-toggle="dropdown">
+                                🔔
+                                {% if unread_notification_count > 0 %}
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background: var(--color-accent); font-size: 0.6rem;">{{ unread_notification_count }}</span>
+                                {% endif %}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end p-2" style="min-width: 300px;">
+                                {% for n in recent_notifications %}
+                                <li>
+                                    <a class="dropdown-item {% if not n.is_read %}fw-bold{% endif %}" href="{% url 'mark_notification_read' n.id %}">
+                                        {{ n.title }}
+                                        <div class="text-muted small fw-normal">{{ n.message|truncatechars:50 }}</div>
+                                    </a>
+                                </li>
+                                {% empty %}
+                                <li><span class="dropdown-item text-muted">No notifications yet.</span></li>
+                                {% endfor %}
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-center" href="{% url 'notification_list' %}">View All</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'dashboard_redirect' %}">Dashboard</a></li>
+                        <li class="nav-item">
+                            <form method="post" action="{% url 'logout' %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="nav-link btn btn-link">Logout</button>
+                            </form>
+                        </li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+                        <li class="nav-item ms-lg-2"><a class="btn btn-lc-primary btn-sm" href="{% url 'register' %}">Book a Test</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== MOBILE RIGHT-SIDE DRAWER ===== -->
+    <div class="lc-drawer-backdrop" id="lcDrawerBackdrop"></div>
+    <aside class="lc-drawer" id="lcDrawer" aria-hidden="true">
+        <div class="lc-drawer-header">
+            <span class="fw-bold">Menu</span>
+            <button class="lc-drawer-close" id="lcDrawerClose" aria-label="Close menu">&times;</button>
+        </div>
+        <nav class="lc-drawer-nav">
+            <a href="{% url 'booking_cart' %}">Cart {% if cart_item_count > 0 %}<span class="lc-badge lc-badge-coral">{{ cart_item_count }}</span>{% endif %}</a>
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'test_list' %}">Tests</a>
+            <a href="{% url 'package_list' %}">Packages</a>
+            <a href="{% url 'about' %}">About</a>
+            <a href="{% url 'faq' %}">FAQ</a>
+            <a href="{% url 'feedback' %}">Feedback</a>
+            <a href="{% url 'contact' %}">Contact</a>
+            {% if user.is_authenticated %}
+                {% if user.role == 'PATIENT' %}<a href="{% url 'my_transactions' %}">Transactions</a>{% endif %}
+                {% if user.role == 'ADMIN' %}<a href="{% url 'admin_dashboard' %}">Admin Panel</a>
+                {% elif user.role == 'STAFF' %}<a href="{% url 'staff_dashboard' %}">Staff Panel</a>{% endif %}
+                <a href="{% url 'notification_list' %}">Notifications {% if unread_notification_count > 0 %}<span class="lc-badge lc-badge-coral">{{ unread_notification_count }}</span>{% endif %}</a>
+                <a href="{% url 'dashboard_redirect' %}">Dashboard</a>
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="lc-drawer-logout">Logout</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}">Login</a>
+                <a href="{% url 'register' %}">Book a Test</a>
+            {% endif %}
+        </nav>
+    </aside>
+
+    {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+            <div class="lc-alert {% if message.tags == 'success' %}lc-alert-success{% elif message.tags == 'error' %}lc-alert-error{% else %}lc-alert-info{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <main>{% block content %}{% endblock %}</main>
+
+    <footer class="lc-footer">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <h5>LIFE CARE DIAGNOSTIC CENTER</h5>
+                    <p>Sena Nagar, Shiv Krupa Medical Store,<br>Near Sai Baba Temple, Kajupada,<br>Kurla West, Mumbai – 400072</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Contact</h5>
+                    <p>
+                        <a href="tel:+919082098149">+91 90820 98149</a><br>
+                        <a href="mailto:lifecareathome2024@gmail.com">lifecareathome2024@gmail.com</a><br>
+                        Digital Lab Report in 24 Hours<br>24/7 Emergency Service
+                    </p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <p><a href="{% url 'test_list' %}">Laboratory Tests</a><br><a href="{% url 'package_list' %}">Health Packages</a><br><a href="{% url 'faq' %}">FAQ</a></p>
+                </div>
+            </div>
+            <div class="lc-footer-bottom">&copy; {% now "Y" %} Life Care Diagnostic Center. All rights reserved.</div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

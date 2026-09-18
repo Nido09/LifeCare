@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}Appointment {{ appointment.appointment_id }}{% endblock %}
+{% block content %}
+<div class="container lc-section">
+    <a href="{% url 'my_appointments' %}" class="text-muted">&larr; Back to my appointments</a>
+
+    <div class="lc-card mt-3" style="max-width: 700px;">
+        <div class="d-flex justify-content-between align-items-start flex-wrap mb-3">
+            <h2 class="h4 mb-0">{{ appointment.appointment_id }}</h2>
+            <span class="lc-badge lc-badge-teal">{{ appointment.get_status_display }}</span>
+        </div>
+
+        <p><strong>Date:</strong> {{ appointment.preferred_date }} at {{ appointment.preferred_time }}</p>
+        <p><strong>Collection Type:</strong> {{ appointment.get_collection_type_display }}</p>
+        {% if appointment.address %}<p><strong>Address:</strong> {{ appointment.address }}</p>{% endif %}
+        {% if appointment.notes %}<p><strong>Notes:</strong> {{ appointment.notes }}</p>{% endif %}
+
+        {% if appointment.collection_type == 'HOME_COLLECTION' %}
+        <div class="lc-card mb-3" style="background: var(--color-primary-light); border: none;">
+            <h6 class="mb-2">Home Collection Status</h6>
+            {% with hc=appointment.home_collection %}
+                <span class="lc-badge lc-badge-teal mb-2">{{ hc.get_status_display }}</span>
+                {% if hc.assigned_staff %}
+                    <p class="mb-0 small">Assigned to: {{ hc.assigned_staff.get_full_name|default:hc.assigned_staff.username }}</p>
+                {% else %}
+                    <p class="mb-0 small text-muted">Not yet assigned to a collection staff member.</p>
+                {% endif %}
+                {% if hc.collected_at %}
+                    <p class="mb-0 small">Collected on: {{ hc.collected_at }}</p>
+                {% endif %}
+            {% endwith %}
+        </div>
+        {% endif %}
+
+        <h5 class="mt-4">Tests / Packages</h5>
+        <ul>
+            {% for t in appointment.tests.all %}<li>{{ t.name }} — ₹{{ t.price }}</li>{% endfor %}
+            {% for p in appointment.packages.all %}<li>{{ p.name }} (Package) — ₹{{ p.price }}</li>{% endfor %}
+        </ul>
+
+        <h5>Total: ₹{{ appointment.total_amount }}</h5>
+
+        {% with latest_payment=appointment.payments.last %}
+            {% if latest_payment and latest_payment.status == 'PAID' %}
+                <span class="lc-badge lc-badge-teal">Payment Completed (at Lab)</span>
+            {% elif appointment.status != 'CANCELLED' %}
+                <span class="lc-badge lc-badge-coral">Payment Due at Lab</span>
+                <p class="text-muted small mt-1 mb-0">Please make the payment at the laboratory during your visit.</p>
+            {% endif %}
+        {% endwith %}
+        {% if appointment.status == 'PENDING' or appointment.status == 'CONFIRMED' %}
+        <a href="{% url 'cancel_appointment' appointment.appointment_id %}"
+           class="btn btn-lc-outline btn-sm mt-2"
+           onclick="return confirm('Are you sure you want to cancel this appointment?');">
+            Cancel Appointment
+        </a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

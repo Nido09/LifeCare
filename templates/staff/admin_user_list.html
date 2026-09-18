@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Manage Users{% endblock %}
+{% block content %}
+<div class="container lc-section">
+    <h1 class="h3 mb-4">Manage Users</h1>
+    <a href="{% url 'admin_dashboard' %}" class="text-muted d-block mb-3">&larr; Back to overview</a>
+
+    <form method="get" class="mb-4">
+        <select name="role" class="form-select" style="max-width: 250px;" onchange="this.form.submit()">
+            <option value="">All Roles</option>
+            {% for value, label in role_choices %}
+            <option value="{{ value }}" {% if value == selected_role %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+    </form>
+
+    {% for u in users %}
+    <div class="lc-card mb-2 d-flex justify-content-between align-items-center flex-wrap">
+        <div>
+            <strong>{{ u.username }}</strong>
+            <span class="text-muted small">{{ u.email }}</span>
+            <span class="lc-badge lc-badge-teal ms-2">{{ u.role }}</span>
+            {% if not u.is_active %}<span class="lc-badge lc-badge-coral ms-1">Inactive</span>{% endif %}
+        </div>
+        <a href="{% url 'admin_user_detail' u.id %}" class="btn btn-lc-outline btn-sm">Manage</a>
+    </div>
+    {% empty %}
+    <p class="text-muted">No users match this filter.</p>
+    {% endfor %}
+</div>
+{% endblock %}

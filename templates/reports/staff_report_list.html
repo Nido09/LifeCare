@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Manage Reports{% endblock %}
+{% block content %}
+<div class="container lc-section">
+    <h1 class="h3 mb-4">Manage Reports</h1>
+    {% include 'staff/_staff_nav.html' %}
+    {% for report in reports %}
+    <div class="lc-card mb-2 d-flex justify-content-between align-items-center flex-wrap">
+        <div>
+            <strong>{{ report.appointment.appointment_id }}</strong> — {{ report.patient.patient_id }}
+            <span class="lc-badge lc-badge-teal ms-2">{{ report.get_status_display }}</span>
+            {% if report.is_demo_data %}<span class="lc-badge lc-badge-coral ms-1">Demo</span>{% endif %}
+        </div>
+        <a href="{% url 'staff_report_detail' report.report_uid %}" class="btn btn-lc-outline btn-sm">Manage</a>
+    </div>
+    {% empty %}
+    <p class="text-muted">No reports yet. Reports are created from an appointment's detail page.</p>
+    {% endfor %}
+</div>
+{% endblock %}

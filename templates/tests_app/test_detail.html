@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}{{ test.name }}{% endblock %}
+{% block content %}
+<div class="container lc-section">
+    <a href="{% url 'test_list' %}" class="text-muted">&larr; Back to all tests</a>
+
+    <div class="lc-card mt-3" style="max-width: 700px;">
+        <span class="lc-badge lc-badge-teal mb-2">{{ test.category.name }}</span>
+        <h1 class="h3">{{ test.name }}</h1>
+        <p class="text-muted">Test Code: {{ test.test_code }}</p>
+
+        {% if test.description %}<p>{{ test.description }}</p>{% endif %}
+
+        <ul class="list-unstyled">
+            {% if test.sample_type %}<li><strong>Sample Type:</strong> {{ test.sample_type }}</li>{% endif %}
+            {% if test.preparation_instructions %}<li><strong>Preparation:</strong> {{ test.preparation_instructions }}</li>{% endif %}
+            <li><strong>Report Turnaround:</strong> {{ test.turnaround_time_hours }} hours</li>
+        </ul>
+
+        <h3 class="mt-3">₹{{ test.price }}</h3>
+
+        {% if user.is_authenticated %}
+    <a href="{% url 'add_to_cart' 'test' test.id %}" class="btn btn-lc-primary">Book This Test</a>
+        {% else %}
+            <a href="{% url 'login' %}" class="btn btn-lc-primary">Login to Book</a>
+        {% endif %}
+    </div>
+
+    {% if related_tests %}
+    <h4 class="mt-5 mb-3">Related Tests in {{ test.category.name }}</h4>
+    <div class="row g-3">
+        {% for rt in related_tests %}
+        <div class="col-md-3">
+            <a href="{% url 'test_detail' rt.test_code %}" class="lc-card d-block h-100 text-decoration-none">
+                <h6>{{ rt.name }}</h6>
+                <p class="text-muted small mb-0">₹{{ rt.price }}</p>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
